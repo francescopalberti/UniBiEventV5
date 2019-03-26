@@ -158,16 +158,16 @@ public class Categoria implements Serializable {
 
 	public String infoChiusura() {
 		StringBuffer s = new StringBuffer();
-		s.append("L'evento "+ campiBase[TITOLO].getValore() +" si svolgerà.");
-		s.append(lineSeparator);
-		s.append("Data: "+ campiBase[DATA].getValore());
-		s.append(lineSeparator);
-		s.append("Ora: "+ campiBase[ORA].getValore());
-		s.append(lineSeparator);
-		s.append("Luogo: "+ campiBase[LUOGO].getValore());
-		s.append(lineSeparator);
-		s.append("Importo dovuto: "+ campiBase[QUOTA].getValore());
-		s.append(lineSeparator);
+			s.append("L'evento "+ campiBase[TITOLO].getValore() +" si svolgerà.");
+			s.append(lineSeparator);
+			s.append("Data: "+ campiBase[DATA].getValore());
+			s.append(lineSeparator);
+			s.append("Ora: "+ campiBase[ORA].getValore());
+			s.append(lineSeparator);
+			s.append("Luogo: "+ campiBase[LUOGO].getValore());
+			s.append(lineSeparator);
+			s.append("Importo dovuto: "+ campiBase[QUOTA].getValore());
+			s.append(lineSeparator);
 		return s.toString();	
 	}
 	

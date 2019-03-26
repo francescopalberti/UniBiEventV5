@@ -10,6 +10,7 @@ public class Application {
 	
 	public static String pathProfili = "data\\profili.dat";
 	public static String pathPartite = "data\\partite.dat";
+	public static String pathConcerti = "data\\concerti.dat";
 	
 	private static final int NUMERO_CAMPI=16;
 	
@@ -32,14 +33,20 @@ public class Application {
 	private static final int GENERE=14;
 	private static final int FASCIA_DI_ETA=15;
 	
+	private static final int BAND_PRINCIPALE=14;
+	private static final int BAND_ACCOMPAGNAMENTO=15;
+	private static final int QUOTA_GADGET=16;
+	private static final int QUOTA_CD=17;
+	private static final int QUOTA_FREE_DRINK=18;
 	
-	private String[] categorie = {"Partita di calcio"};
+	private String[] categorie = {"Partita di calcio","Concerto"};
 	private Data dataOdierna;
 	private Ora oraAttuale;
 	private SpazioPersonale mioProfilo;
 	private String titoloMain = "HOME";
 	private String titoloLogin = "LOGIN/ACCEDI";
 	private Vector<PartitaDiCalcio> listaPartite;
+	private Vector<Concerto> listaConcerti;
 	private Vector<SpazioPersonale> profili;
 	private String[] vociMain = {"Esci e salva","Vedi eventi", "Crea evento", "Vedi profilo"};
 	private String[] vociSpazioPersonale = {"Esci","Vedi eventi che ho creato","Vedi eventi a cui sono iscritto","Vedi notifiche","Modifica dati personali","Gestisci inviti"};
@@ -66,6 +73,9 @@ public class Application {
 		
 		if(new File(pathPartite).exists())listaPartite=(Vector<PartitaDiCalcio>)caricaOggetto(pathPartite, PartitaDiCalcio.class);
 		else listaPartite = new Vector<PartitaDiCalcio>();
+		
+		if(new File(pathConcerti).exists())listaConcerti=(Vector<Concerto>)caricaOggetto(pathConcerti, Concerto.class);
+		else listaConcerti = new Vector<Concerto>();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -77,6 +87,10 @@ public class Application {
 		
 		if(c==PartitaDiCalcio.class) {
 			result = (Vector<Categoria>) objectIn.readObject();
+			objectIn.close();
+		}
+		if(c==Concerto.class) {
+			result = (Vector<Concerto>) objectIn.readObject();
 			objectIn.close();
 		}
 		else if(c==SpazioPersonale.class){
@@ -189,6 +203,9 @@ public class Application {
 		for (Categoria evento : listaPartite) {
 			evento.aggiornaStato(dataOdierna);
 		}
+		for (Categoria evento2 : listaConcerti) {
+			evento2.aggiornaStato(dataOdierna);
+		}
 	}
 
 	private void creaEvento() {
@@ -198,44 +215,86 @@ public class Application {
 		{
 			case 1: compilaEvento(PartitaDiCalcio.class);
 				break;
+			case 2: compilaEvento(Concerto.class);
+				break;
 			case 0: return;
 		}
 	}
 	
 	public void compilaEvento(Class c) {
 		if(c==PartitaDiCalcio.class) {
-			Campo[] campi =new Campo [16];
-			assegnaPartitaDiCalcio(campi);
-			compilazioneCampiGenerici(campi);
-			for (int i = 14; i < 16; i++) {
-				System.out.print(campi[i].toString());
-				switch (i)
-				{	
-				   case GENERE:
-					   campi[i].setValore(Utility.leggiStringa(""));
-				      break;
-				   case FASCIA_DI_ETA:
-					   Integer min=Utility.leggiIntero("\nEtà min");
-					   Integer max=Utility.leggiIntero("Età max");
-					   if(!(min==null && max==null)) {
-						   FasciaDiEta fascia = new FasciaDiEta(min, max);
-						   campi[i].setValore(fascia);		   
-					   }
-
-					      break;
-				}
-			}
-			if(controlloCompilazione(campi)){
-				PartitaDiCalcio unaPartita = new PartitaDiCalcio(Arrays.copyOfRange(campi, 0, 14), Arrays.copyOfRange(campi, 14, 16),mioProfilo);
-				listaPartite.add(unaPartita);
-				mioProfilo.addEventoCreato(unaPartita);
-				notificaInteressati("Partita di calcio"); //da correggere
-			} else {
-				System.out.println("Non hai compilato alcuni campi obbligatori");
-			}
+			compilazionePartita();
+		}
+		if(c==Concerto.class) {
+			compilazioneConcerto();
 		}
 		
 	}
+	
+	
+	private void compilazionePartita() {
+		Campo[] campi =new Campo [16];
+		assegnaPartitaDiCalcio(campi);
+		compilazioneCampiGenerici(campi);
+		for (int i = 14; i < 16; i++) {
+			System.out.print(campi[i].toString());
+			switch (i)
+			{	
+			   case GENERE:
+				   campi[i].setValore(Utility.leggiStringa(""));
+			      break;
+			   case FASCIA_DI_ETA:
+				   Integer min=Utility.leggiIntero("\nEtà min");
+				   Integer max=Utility.leggiIntero("Età max");
+				   if(!(min==null && max==null)) {
+					   FasciaDiEta fascia = new FasciaDiEta(min, max);
+					   campi[i].setValore(fascia);		   
+				   }
+
+				      break;
+			}
+		}
+		if(controlloCompilazione(campi)){
+			PartitaDiCalcio unaPartita = new PartitaDiCalcio(Arrays.copyOfRange(campi, 0, 14), Arrays.copyOfRange(campi, 14, 16),mioProfilo);
+			listaPartite.add(unaPartita);
+			mioProfilo.addEventoCreato(unaPartita);
+			notificaInteressati("Partita di calcio"); //da correggere
+		} else {
+			System.out.println("Non hai compilato alcuni campi obbligatori");
+		}
+	}
+	
+	
+	public void compilazioneConcerto() {
+		Campo[] campi =new Campo [19];
+		assegnaConcerto(campi);
+		compilazioneCampiGenerici(campi);
+		for (int i = 14; i < 19; i++) {
+			System.out.print(campi[i].toString());
+			switch (i)
+			{	
+			   case BAND_PRINCIPALE:
+			   case BAND_ACCOMPAGNAMENTO:
+				   campi[i].setValore(Utility.leggiStringa(""));
+			      break;
+			   case QUOTA_GADGET:
+			   case QUOTA_CD:
+			   case QUOTA_FREE_DRINK:
+				   campi[i].setValore(Utility.leggiIntero(""));
+				      break;
+			}
+		}
+		if(controlloCompilazione(campi)){
+			Concerto unConcerto = new Concerto(Arrays.copyOfRange(campi, 0, 14), Arrays.copyOfRange(campi, 14, 17),mioProfilo);
+			listaConcerti.add(unConcerto);
+			mioProfilo.addEventoCreato(unConcerto);
+			notificaInteressati("Concerto"); 
+		} else {
+			System.out.println("Non hai compilato alcuni campi obbligatori");
+		}
+		
+	}
+	
 	
 	public void compilazioneCampiGenerici(Campo [] campi){
 		for (int i = 0; i < 14; i++) {
@@ -303,7 +362,7 @@ public class Application {
 	}
 	
 	public Boolean controlloCompilazione(Campo [] campi) {
-		for (int i = 0; i < NUMERO_CAMPI; i++) {
+		for (int i = 0; i < campi.length; i++) {
 			if(campi[i].isObbligatorio()) {
 				if(campi[i].getValore()==null) return false;
 			}
@@ -328,6 +387,9 @@ public class Application {
 			case 1: if(vediEventi(getEventiDisponibili(PartitaDiCalcio.class)))
 						scegliEvento(getEventiDisponibili(PartitaDiCalcio.class));
 				break;
+			case 2: if(vediEventi(getEventiDisponibili(Concerto.class)))
+						scegliEvento(getEventiDisponibili(Concerto.class));
+				break;
 			case 0: return;
 		}
 	}
@@ -344,6 +406,10 @@ public class Application {
 		Vector<Categoria> disponibili = new Vector<Categoria>();
 		if(c==PartitaDiCalcio.class) {
 			for(Categoria p:listaPartite) 
+				if(!mioProfilo.isPartecipante(p) && p.isAperto()) disponibili.add(p);		
+		}
+		if(c==Concerto.class) {
+			for(Categoria p:listaConcerti) 
 				if(!mioProfilo.isPartecipante(p) && p.isAperto()) disponibili.add(p);		
 		}
 		return disponibili;
@@ -365,7 +431,7 @@ public class Application {
 	}
 	
 	public void scegliEvento(Vector<Categoria> disponibili) {
-		int a = Utility.sceltaDaLista("Seleziona partita a cui vuoi aderire (0 per uscire):", disponibili.size());
+		int a = Utility.sceltaDaLista("Seleziona evento a cui vuoi aderire (0 per uscire):", disponibili.size());
 		
 			if(a==0) return;
 			else{
@@ -556,6 +622,15 @@ public class Application {
 		
 	}
 	
+	public void assegnaConcerto(Campo[] campi) {
+		assegnaEvento(campi);
+		campi[BAND_PRINCIPALE]=new Campo<String>("Band principale","Indica la band principale del concerto",true);
+		campi[BAND_ACCOMPAGNAMENTO]=new Campo<FasciaDiEta>("Band di accompagnamento","Indica la band di accompagnamento del concerto",false);
+		campi[QUOTA_GADGET]=new Campo<Integer>("Costo Gadget","Indica il costo dei gadget della band",false);
+		campi[QUOTA_CD]=new Campo<Integer>("Costo CD","Indica il costo del CD della band",false);
+		campi[QUOTA_FREE_DRINK]=new Campo<Integer>("Costo free drink","Indica il costo del free drink durante il concerto",false);
+	}
+	
 	public void esciEsalva() throws IOException
 	{
 		System.out.println("Salvataggio...");
@@ -563,6 +638,10 @@ public class Application {
 		ObjectOutputStream writerPartite=new ObjectOutputStream(new FileOutputStream(new File(pathPartite)));
 		writerPartite.writeObject(listaPartite);
 		writerPartite.close();
+		
+		ObjectOutputStream writerConcerti=new ObjectOutputStream(new FileOutputStream(new File(pathConcerti)));
+		writerConcerti.writeObject(listaConcerti);
+		writerConcerti.close();
 		
 		ObjectOutputStream writerProfili=new ObjectOutputStream(new FileOutputStream(new File(pathProfili)));
 		writerProfili.writeObject(profili);

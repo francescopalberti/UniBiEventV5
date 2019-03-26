@@ -43,6 +43,7 @@ public class Utility {
 			
 			Scanner in= new Scanner(System.in);
 			lettura=in.nextLine();
+			if(lettura.isEmpty()) lettura=null;
 		}catch(InputMismatchException e)
 		{
 			System.out.println("Errore di inserimento!");
@@ -57,6 +58,7 @@ public class Utility {
 			System.out.println(messaggio + " -->");
 			Scanner in= new Scanner(System.in);
 			lettura=in.nextLine();
+			if(lettura.isEmpty()) lettura=null;
 		}catch(InputMismatchException e)
 		{
 			System.out.println("Errore di inserimento!");
