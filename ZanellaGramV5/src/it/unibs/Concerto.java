@@ -100,7 +100,7 @@ public class Concerto extends Categoria implements Serializable{
 		if(listaPagantiDrink.contains(profilo)) {
 			quotaTotale=quotaTotale+(Integer)campiSpecifici[QUOTA_FREE_DRINK].getValore();
 		}
-			s.append("Importo totale (iscrizione + extra: "+ quotaTotale + "€");
+			s.append("Importo totale (iscrizione + extra) : "+ quotaTotale + "€");
 			s.append(lineSeparator);
 		return s.toString();
 	}

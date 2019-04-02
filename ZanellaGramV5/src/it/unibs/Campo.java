@@ -51,7 +51,8 @@ public class Campo<T> implements Serializable {
 	}
 	
 	public String toStringValore() {
-		return nome + ": " + valore;
+		if(valore==null) return nome + ": ";
+		else return nome + ": " + valore;
 	}
 	
 	public String toString() {

@@ -90,11 +90,11 @@ public class Categoria implements Serializable {
 	}
 	
 	public void aggiornaStato(Data dataOdierna) {
-		checkFallimento(dataOdierna);
-		checkConclusione(dataOdierna);
-		checkChiusura(dataOdierna);
-		
-		//return concluso || fallito || chiuso || ritirato; mi sembra non serva(?)
+		if(isAperto()) {
+			checkFallimento(dataOdierna);
+			checkConclusione(dataOdierna);
+			checkChiusura(dataOdierna);
+		}
 	}
 	
 	

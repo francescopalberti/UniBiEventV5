@@ -33,15 +33,14 @@ public Data(Integer gg, Integer mm, Integer yy) {
 	}
 
 	public Boolean isPrecedente(Data unaData) {
-		if (unaData.getAnno()<anno) return false;
-		else {
-			if (unaData.getMese()<mese) return false;
-			else {
-				if (unaData.getGiorno()<=giorno) return false;
-			}
-		}
+		if (anno<unaData.getAnno()) return true;
+		else if (anno>unaData.getAnno()) return false;
+			if (mese<unaData.getMese()) return true;
+			else if (mese>unaData.getMese()) return false;
+				if (giorno<unaData.getGiorno()) return true;
+				else if(giorno>unaData.getGiorno()) return false;
 		
-		return true;
+		return false;
 	}
 
 	@Override

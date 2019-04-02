@@ -8,9 +8,9 @@ import java.util.Vector;
 
 public class Application {
 	
-	public static String pathProfili = "C:\\Users\\zenry\\git\\ZanellaGramV5\\ZanellaGramV5\\data\\profili.dat";
-	public static String pathPartite = "C:\\Users\\zenry\\git\\ZanellaGramV5\\ZanellaGramV5\\data\\partite.dat";
-	public static String pathConcerti = "C:\\Users\\zenry\\git\\ZanellaGramV5\\ZanellaGramV5\\data\\concerti.dat";
+	public static String pathProfili = "data\\profili.dat";
+	public static String pathPartite = "data\\partite.dat";
+	public static String pathConcerti = "data\\concerti.dat";
 	
 	
 	private static final int TITOLO=0;
@@ -404,11 +404,11 @@ public class Application {
 		Vector<Categoria> disponibili = new Vector<Categoria>();
 		if(c==PartitaDiCalcio.class) {
 			for(Categoria p:listaPartite) 
-				if(!mioProfilo.isPartecipante(p) && p.isAperto()) disponibili.add(p);		
+				if(!(mioProfilo.isPartecipante(p)) && p.isAperto()) disponibili.add(p);		
 		}
 		if(c==Concerto.class) {
 			for(Categoria p:listaConcerti) 
-				if(!mioProfilo.isPartecipante(p) && p.isAperto()) disponibili.add(p);		
+				if(!(mioProfilo.isPartecipante(p)) && p.isAperto()) disponibili.add(p);		
 		}
 		return disponibili;
 	}
@@ -482,7 +482,8 @@ public class Application {
 				a = Utility.sceltaDaLista("Seleziona evento che vuoi ritirare (0 per uscire):", mioProfilo.getEventiCreati().size());
 				if(a==0) return;
 				else { 
-					Categoria ritirato = mioProfilo.getEventiCreati().get(a-1);
+
+					Categoria ritirato = searchEvento(mioProfilo.getEventiCreati().get(a-1));
 					if(ritirato.isRitirabile(dataOdierna)) {
 						mioProfilo.deleteEventoCreato(a-1); 
 						ritirato.ritiraEvento();
@@ -589,7 +590,7 @@ public class Application {
 	private void partecipaEvento(Categoria evento) {
 		evento.aggiungiPartecipante(mioProfilo);
 		mioProfilo.addEventoPrenotato(evento);
-		controlloEventi();
+		evento.checkChiusura(dataOdierna);
 	}
 	
 	
@@ -646,5 +647,17 @@ public class Application {
 		writerProfili.close();
 	}
 
-		
+	private Categoria searchEvento(Categoria eventoCercato) {
+		if(eventoCercato.getClass()==PartitaDiCalcio.class) {
+			for (Categoria evento : listaPartite) {
+				if (evento.getCampiCompilati().equals(eventoCercato.getCampiCompilati())) return evento;
+			}
+		}
+		if(eventoCercato.getClass()==Concerto.class) {
+			for (Categoria evento : listaConcerti) {
+				if (evento.getCampiCompilati().equals(eventoCercato.getCampiCompilati())) return evento;
+			}
+		}	
+		return null;
+	}
 }
