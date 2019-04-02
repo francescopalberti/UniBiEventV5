@@ -33,10 +33,14 @@ public class PartitaDiCalcio extends Categoria implements Serializable{
 		}
 		return s.toString();
 	}
-
-	/*public void setCampiSpecifici(Campo[] campiSpecifici) {
-		this.campiSpecifici = campiSpecifici;
-	}*/
+	
+	public String infoChiusura(SpazioPersonale profilo){
+		StringBuffer s = new StringBuffer();
+			s.append(super.infoChiusura(profilo)); //chiama quello di Categoria
+			s.append(lineSeparator);
+			s.append(infoPagamento());  //chiama quello di Categoria
+		return s.toString();
+	}
 	
 
 }

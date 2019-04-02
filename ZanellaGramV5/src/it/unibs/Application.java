@@ -8,11 +8,10 @@ import java.util.Vector;
 
 public class Application {
 	
-	public static String pathProfili = "data\\profili.dat";
-	public static String pathPartite = "data\\partite.dat";
-	public static String pathConcerti = "data\\concerti.dat";
+	public static String pathProfili = "C:\\Users\\zenry\\git\\ZanellaGramV5\\ZanellaGramV5\\data\\profili.dat";
+	public static String pathPartite = "C:\\Users\\zenry\\git\\ZanellaGramV5\\ZanellaGramV5\\data\\partite.dat";
+	public static String pathConcerti = "C:\\Users\\zenry\\git\\ZanellaGramV5\\ZanellaGramV5\\data\\concerti.dat";
 	
-	private static final int NUMERO_CAMPI=16;
 	
 	private static final int TITOLO=0;
 	private static final int NUMERO_PARTECIPANTI=1;
@@ -64,8 +63,6 @@ public class Application {
 
 	@SuppressWarnings("unchecked")
 	private void initObjects() throws ClassNotFoundException, IOException {
-		campi = new Campo[NUMERO_CAMPI];
-		assegnaPartitaDiCalcio(campi);
 		
 		//caricamento oggetti
 		if(new File(pathProfili).exists())profili=(Vector<SpazioPersonale>)caricaOggetto(pathProfili, SpazioPersonale.class);
@@ -200,6 +197,7 @@ public class Application {
 
 
 	private void controlloEventi() {
+		
 		for (Categoria evento : listaPartite) {
 			evento.aggiornaStato(dataOdierna);
 		}
@@ -285,7 +283,7 @@ public class Application {
 			}
 		}
 		if(controlloCompilazione(campi)){
-			Concerto unConcerto = new Concerto(Arrays.copyOfRange(campi, 0, 14), Arrays.copyOfRange(campi, 14, 17),mioProfilo);
+			Concerto unConcerto = new Concerto(Arrays.copyOfRange(campi, 0, 14), Arrays.copyOfRange(campi, 14, 19),mioProfilo);
 			listaConcerti.add(unConcerto);
 			mioProfilo.addEventoCreato(unConcerto);
 			notificaInteressati("Concerto"); 

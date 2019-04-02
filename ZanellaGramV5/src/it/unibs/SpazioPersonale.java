@@ -111,10 +111,8 @@ public class SpazioPersonale implements Serializable {
 	
 	public void stampaNotifiche() {
 		System.out.println("NOTIFICHE:");
-		int i=0;
-		for (String notifica : notifiche) {
-			System.out.println(i+1 + ") " + notifica);
-			i++;
+		for (int i=0;i<notifiche.size();i++) {
+			System.out.println(i+1 + ") " + notifiche.get(i));
 		}
 	}
 	
