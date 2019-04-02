@@ -6,11 +6,7 @@ import java.util.Date;
 import java.util.Vector;
 
 
-public class Application {
-	
-	public static String pathProfili = "data\\profili.dat";
-	public static String pathPartite = "data\\partite.dat";
-	public static String pathConcerti = "data\\concerti.dat";
+public class Application implements Serializable{
 	
 	
 	private static final int TITOLO=0;
@@ -54,48 +50,43 @@ public class Application {
 	
 	private Campo[] campi;
 	
-	public Application(Data dataOdierna, Ora oraAttuale) throws ClassNotFoundException, IOException {
+	public Application() {
 		initObjects();
+	}
+	
+	private void initObjects() {
+		profili = new Vector<SpazioPersonale>();
+		listaPartite = new Vector<PartitaDiCalcio>();
+		listaConcerti = new Vector<Concerto>();
+	}
+	
+	
+	public void runApplication(Data dataOdierna, Ora oraAttuale) {
 		this.dataOdierna=dataOdierna;
 		this.oraAttuale=oraAttuale;
+		log();
+		controlloEventi();
+		boolean fine=false;
+		while(!fine)
+		{	
+			int i = Utility.scegli(titoloMain,vociMain,"Seleziona una voce",4);
+			switch(i) {
+				case 0: 
+					fine=true;
+					break;
+				case 1:vediCategorie();
+					break;
+				case 2:creaEvento();
+					break;
+				case 3: visualizzaSpazioPersonale();
+					break;
+				default: System.out.println("Scelta non valida!");
+					break;
+				
+			}
+		}
 	}
 	
-
-	@SuppressWarnings("unchecked")
-	private void initObjects() throws ClassNotFoundException, IOException {
-		
-		//caricamento oggetti
-		if(new File(pathProfili).exists())profili=(Vector<SpazioPersonale>)caricaOggetto(pathProfili, SpazioPersonale.class);
-		else profili = new Vector<SpazioPersonale>();
-		
-		if(new File(pathPartite).exists())listaPartite=(Vector<PartitaDiCalcio>)caricaOggetto(pathPartite, PartitaDiCalcio.class);
-		else listaPartite = new Vector<PartitaDiCalcio>();
-		
-		if(new File(pathConcerti).exists())listaConcerti=(Vector<Concerto>)caricaOggetto(pathConcerti, Concerto.class);
-		else listaConcerti = new Vector<Concerto>();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Object caricaOggetto(String path, Class c) throws ClassNotFoundException, IOException
-	{
-		FileInputStream in = new FileInputStream(new File(path));
-		ObjectInputStream objectIn=new ObjectInputStream(in);
-		Object result=new Object();
-		
-		if(c==PartitaDiCalcio.class) {
-			result = (Vector<Categoria>) objectIn.readObject();
-			objectIn.close();
-		}
-		if(c==Concerto.class) {
-			result = (Vector<Concerto>) objectIn.readObject();
-			objectIn.close();
-		}
-		else if(c==SpazioPersonale.class){
-			result = (Vector<SpazioPersonale>) objectIn.readObject();
-			objectIn.close();
-		}
-		return result;
-	}
 	
 	public void log() {
 		boolean fine=false;
@@ -169,30 +160,6 @@ public class Application {
 				   mioProfilo.addCategoriaPreferita(preferita);
 		   		}
 	   }while(scelta!=0);
-	}
-	
-	public void runApplication() throws IOException {
-		log();
-		controlloEventi();
-		boolean fine=false;
-		while(!fine)
-		{	
-			int i = Utility.scegli(titoloMain,vociMain,"Seleziona una voce",4);
-			switch(i) {
-				case 0: {fine=true;
-					esciEsalva();}
-					break;
-				case 1:vediCategorie();
-					break;
-				case 2:creaEvento();
-					break;
-				case 3: visualizzaSpazioPersonale();
-					break;
-				default: System.out.println("Scelta non valida!");
-					break;
-				
-			}
-		}
 	}
 
 
@@ -483,7 +450,7 @@ public class Application {
 				if(a==0) return;
 				else { 
 
-					Categoria ritirato = searchEvento(mioProfilo.getEventiCreati().get(a-1));
+					Categoria ritirato = mioProfilo.getEventiCreati().get(a-1);
 					if(ritirato.isRitirabile(dataOdierna)) {
 						mioProfilo.deleteEventoCreato(a-1); 
 						ritirato.ritiraEvento();
@@ -630,34 +597,4 @@ public class Application {
 		campi[QUOTA_FREE_DRINK]=new Campo<Integer>("Costo free drink","Indica il costo del free drink durante il concerto",false);
 	}
 	
-	public void esciEsalva() throws IOException
-	{
-		System.out.println("Salvataggio...");
-		
-		ObjectOutputStream writerPartite=new ObjectOutputStream(new FileOutputStream(new File(pathPartite)));
-		writerPartite.writeObject(listaPartite);
-		writerPartite.close();
-		
-		ObjectOutputStream writerConcerti=new ObjectOutputStream(new FileOutputStream(new File(pathConcerti)));
-		writerConcerti.writeObject(listaConcerti);
-		writerConcerti.close();
-		
-		ObjectOutputStream writerProfili=new ObjectOutputStream(new FileOutputStream(new File(pathProfili)));
-		writerProfili.writeObject(profili);
-		writerProfili.close();
-	}
-
-	private Categoria searchEvento(Categoria eventoCercato) {
-		if(eventoCercato.getClass()==PartitaDiCalcio.class) {
-			for (Categoria evento : listaPartite) {
-				if (evento.getCampiCompilati().equals(eventoCercato.getCampiCompilati())) return evento;
-			}
-		}
-		if(eventoCercato.getClass()==Concerto.class) {
-			for (Categoria evento : listaConcerti) {
-				if (evento.getCampiCompilati().equals(eventoCercato.getCampiCompilati())) return evento;
-			}
-		}	
-		return null;
-	}
 }
