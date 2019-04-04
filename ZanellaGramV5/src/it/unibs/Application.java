@@ -387,11 +387,11 @@ public class Application implements Serializable{
 		Vector<Categoria> disponibili = new Vector<Categoria>();
 		if(c==PartitaDiCalcio.class) {
 			for(Categoria p:listaPartite) 
-				if(!(mioProfilo.isPartecipante(p)) && p.isAperto()) disponibili.add(p);		
+				if(!(mioProfilo.isPartecipante(p)) && p.isIscrivibile()) disponibili.add(p);		
 		}
 		if(c==Concerto.class) {
 			for(Categoria p:listaConcerti) 
-				if(!(mioProfilo.isPartecipante(p)) && p.isAperto()) disponibili.add(p);		
+				if(!(mioProfilo.isPartecipante(p)) && p.isIscrivibile()) disponibili.add(p);		
 		}
 		return disponibili;
 	}
@@ -502,18 +502,20 @@ public class Application implements Serializable{
 
 	public void gestioneNotifiche() {
 		int a;
-		if(mioProfilo.noNotifiche()) {
-			System.out.println("NON hai notifiche da visualizzare");
-		}else {
-			mioProfilo.stampaNotifiche();
-			do {
+		Boolean fine=false;
+		do {
+			if(mioProfilo.noNotifiche()) {
+				System.out.println("NON hai notifiche da visualizzare");
+				fine=true;
+			}else {
+				mioProfilo.stampaNotifiche();
 				a = Utility.sceltaDaLista("Seleziona notifica che vuoi eliminare (0 per uscire):", mioProfilo.getNumeroNotifiche());
-				if(a==0) return;
+				if(a==0) fine=true;
 				else{
 					mioProfilo.deleteNotifica(a-1); 
 				}
-			}while(a!=0);
-		}
+			}
+		}while(!fine);
 	}
 	
 	private void gestioneInviti() {

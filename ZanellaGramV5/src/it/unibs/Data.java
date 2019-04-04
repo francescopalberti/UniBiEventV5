@@ -43,6 +43,18 @@ public Data(Integer gg, Integer mm, Integer yy) {
 		
 		return false;
 	}
+	
+	//Con date uguali ritorna TRUE
+	public Boolean isPrecedenteOppureUguale(Data unaData) {
+		if (anno<unaData.getAnno()) return true;
+		else if (anno>unaData.getAnno()) return false;
+			if (mese<unaData.getMese()) return true;
+			else if (mese>unaData.getMese()) return false;
+				if (giorno<=unaData.getGiorno()) return true;
+				else if(giorno>unaData.getGiorno()) return false;
+		
+		return false;
+	}
 
 	@Override
 	public String toString() {

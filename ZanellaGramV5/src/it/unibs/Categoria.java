@@ -43,7 +43,7 @@ public class Categoria implements Serializable {
 		campiBase = _campiBase;
 		nome=_nome;
 		descrizione=_descrizione;
-		partecipantiAttuali=0;
+		partecipantiAttuali=1;
 		listaPartecipanti= new Vector<SpazioPersonale>();
 		chiuso=false;
 		fallito=false;
@@ -89,6 +89,16 @@ public class Categoria implements Serializable {
 		listaPartecipanti.remove(rimosso);
 	}
 	
+	public Integer getNumeroMassimoPartecipanti(){
+		Integer numeroPartecipanti=(Integer)campiBase[NUMERO_PARTECIPANTI].getValore();
+		Integer tolleranza;
+		Integer temp=(Integer)campiBase[TOLLERANZA_PARTECIPANTI].getValore();
+		if(temp==null)
+			tolleranza= new Integer(0);
+		else tolleranza=temp;
+		return numeroPartecipanti+tolleranza;
+	}
+	
 	public void aggiornaStato(Data dataOdierna) {
 		if(isAperto()) {
 			checkFallimento(dataOdierna);
@@ -127,22 +137,17 @@ public class Categoria implements Serializable {
 	
 	protected void checkChiusura(Data dataOdierna) {
 		Integer numeroPartecipanti=(Integer)campiBase[NUMERO_PARTECIPANTI].getValore();
-		Integer tolleranza;
-		Integer temp=(Integer)campiBase[TOLLERANZA_PARTECIPANTI].getValore();
-		if(temp==null)
-			tolleranza= new Integer(0);
-		else tolleranza=temp;
 		Data termineIscrizioni = (Data) campiBase[TERMINE_ISCRIZIONI].getValore();
 		scaduto=termineIscrizioni.isPrecedente(dataOdierna);
 		
-		boolean nonPiuIscrivibile=partecipantiAttuali>=numeroPartecipanti &&  partecipantiAttuali<=numeroPartecipanti+tolleranza && scaduto;
-		boolean postiEsauriti= !scaduto && isRitirabile(dataOdierna) && (partecipantiAttuali==numeroPartecipanti+tolleranza);
+		boolean nonPiuIscrivibile=partecipantiAttuali>=numeroPartecipanti &&  partecipantiAttuali<=getNumeroMassimoPartecipanti() && scaduto;
+		boolean postiEsauriti= !scaduto && !(isRitirabile(dataOdierna)) && (partecipantiAttuali==getNumeroMassimoPartecipanti());
 		
-		if( nonPiuIscrivibile || postiEsauriti) {
+		if( nonPiuIscrivibile || postiEsauriti ) {
 			chiuso=true;	
 			for (SpazioPersonale profilo : listaPartecipanti) {
 					profilo.addNotifica(infoChiusura(profilo));
-		}
+			}
 		}
 	}
 	
@@ -186,6 +191,10 @@ public class Categoria implements Serializable {
 		return ((!chiuso) && (!fallito) && (!concluso) && (!ritirato));
 	}
 	
+	public boolean isIscrivibile(){
+		return isAperto() && partecipantiAttuali<getNumeroMassimoPartecipanti();
+	}
+	
 	public boolean isRitirabile(Data dataOdierna){
 		Data termineIscrizioni = (Data)campiBase[TERMINE_ISCRIZIONI].getValore();
 		Data temp=(Data)campiBase[TERMINE_RITIRO_ISCRIZIONE].getValore();
@@ -193,12 +202,12 @@ public class Categoria implements Serializable {
 		if(temp==null)
 			termineRitiroIscrizioni=termineIscrizioni;
 		else termineRitiroIscrizioni = temp;
-		
-		return dataOdierna.isPrecedente(termineRitiroIscrizioni);
+		return (dataOdierna.isPrecedenteOppureUguale(termineRitiroIscrizioni));
 	}
 	
 	public void ritiraEvento() {
 		ritirato=true;
+		System.out.println("Evento ritirato con successo! \n");
 		for (SpazioPersonale profilo : listaPartecipanti) {
 			profilo.addNotifica(infoRitiro());
 		}
