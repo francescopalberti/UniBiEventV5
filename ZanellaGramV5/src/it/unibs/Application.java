@@ -144,22 +144,35 @@ public class Application implements Serializable{
 		return true;
 	}
 	
-	public void infoAggiuntive() {
-	   FasciaDiEta fascia = new FasciaDiEta(Utility.leggiIntero("\nEtà min"), Utility.leggiIntero("Età max"));
+	public void infoAggiuntive() {   
+	   System.out.println("Inserisci la tua fascia di età:");
+	   FasciaDiEta fascia = new FasciaDiEta(Utility.leggiInteroOpzionale("\nEtà min"), Utility.leggiInteroOpzionale("Età max"));
 	   mioProfilo.setEta(fascia);
 	   mioProfilo.deletePreferiti();
-	   stampaCategorie();
-	   boolean fine;
+	   Vector<String> daStampare=new Vector<String>();
+	   for(String el: categorie){
+		   daStampare.add(el);
+	   }
+	   boolean fine=false;
 	   int scelta;
 	   do {
+		   //stampaCategorie();
+		   if(daStampare.size()>0){
+			   Utility.stampaVettoreNumerato(daStampare);
 		   scelta = Utility.leggiIntero("Seleziona categoria d'interesse (0 per terminare)");
-		   if(scelta>categorie.length) System.out.println("Scelta non valida!!");
+		   if(scelta>daStampare.size()) System.out.println("Scelta non valida!!");
 		   else if (scelta==0) return;
 		   else {
 				   String preferita = categorie[scelta-1];
 				   mioProfilo.addCategoriaPreferita(preferita);
+				   daStampare.remove(scelta-1);
 		   		}
-	   }while(scelta!=0);
+		   } else {
+			   System.out.println("Categorie disponibili esaurite.");
+			   fine=true;
+		   }
+		   
+	   }while(!fine);
 	}
 
 
@@ -209,8 +222,8 @@ public class Application implements Serializable{
 				   campi[i].setValore(Utility.leggiStringa(""));
 			      break;
 			   case FASCIA_DI_ETA:
-				   Integer min=Utility.leggiIntero("\nEtà min");
-				   Integer max=Utility.leggiIntero("Età max");
+				   Integer min=Utility.leggiInteroOpzionale("\nEtà min");
+				   Integer max=Utility.leggiInteroOpzionale("Età max");
 				   if(!(min==null && max==null)) {
 					   FasciaDiEta fascia = new FasciaDiEta(min, max);
 					   campi[i].setValore(fascia);		   
@@ -245,7 +258,7 @@ public class Application implements Serializable{
 			   case QUOTA_GADGET:
 			   case QUOTA_CD:
 			   case QUOTA_FREE_DRINK:
-				   campi[i].setValore(Utility.leggiIntero(""));
+				   campi[i].setValore(Utility.leggiInteroOpzionale(""));
 				      break;
 			}
 		}
@@ -269,7 +282,7 @@ public class Application implements Serializable{
 			   case NUMERO_PARTECIPANTI:
 			   case QUOTA:
 			   case TOLLERANZA_PARTECIPANTI:
-			      campi[i].setValore(Utility.leggiIntero(""));
+			      campi[i].setValore(Utility.leggiInteroOpzionale(""));
 			      break;
 			   case TITOLO:
 			   case LUOGO:
@@ -282,12 +295,13 @@ public class Application implements Serializable{
 			   case DATA_CONCLUSIVA:
 			   case TERMINE_RITIRO_ISCRIZIONE:
 				   Boolean formatoDataErrato=false;
+				   Boolean incoerenzaData=false;
 				   Data date;
 				   Integer gg, mm, aa;
 				   do {
-					   gg=Utility.leggiIntero("\nGiorno");
-					   mm=Utility.leggiIntero("Mese");
-					   aa=Utility.leggiIntero("Anno");
+					   gg=Utility.leggiInteroOpzionale("\nGiorno");
+					   mm=Utility.leggiInteroOpzionale("Mese");
+					   aa=Utility.leggiInteroOpzionale("Anno");
 					   if(gg==null && mm==null && aa==null) {
 						   date=null;
 						   formatoDataErrato=false;
@@ -295,10 +309,12 @@ public class Application implements Serializable{
 					   else {
 						   date = new Data(gg, mm, aa);
 						   formatoDataErrato=!date.controlloData();
+						   incoerenzaData=date.isPrecedente(dataOdierna);
 						   if (formatoDataErrato) System.out.println("Hai inserito una data nel formato errato!");
-						   else campi[i].setValore(date); 
+						   else if(incoerenzaData) System.out.println("Hai inserito una data già passata!");   
+						   else campi[i].setValore(date);
 					   }
-				   } while(formatoDataErrato);
+				   } while(formatoDataErrato || incoerenzaData);
 				      break;
 			   case ORA:
 			   case DURATA:
@@ -307,8 +323,8 @@ public class Application implements Serializable{
 				   Ora orario;
 				   Integer ora,min;
 				   do {
-					   ora=Utility.leggiIntero("\nOra");
-					   min=Utility.leggiIntero("Minuti");
+					   ora=Utility.leggiInteroOpzionale("\nOra");
+					   min=Utility.leggiInteroOpzionale("Minuti");
 					   if(ora==null && min==null) {
 						   orario=null;
 						   formatoOraErrato=false;

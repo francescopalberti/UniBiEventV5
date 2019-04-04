@@ -2,9 +2,11 @@ package it.unibs;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Utility {
-		
+	private final static String ERRORE_FORMATO = "Attenzione: il dato inserito non e' nel formato corretto";
+	
 	public static int scegli(String titoloMain, String[] vociMain, String query, int dim)
 	{
 		System.out.println("________________________________________________");
@@ -13,11 +15,12 @@ public class Utility {
 		for(int i=0;i<dim;i++) {
 			System.out.println(i+") "+vociMain[i]);
 		}
-		int a = leggiIntero(query);
+		Integer a = leggiIntero(query);
 		return a;
 	}
 	
-	public static Integer leggiIntero(String query) 
+
+	public static Integer leggiInteroOpzionale(String query) 
 	{
 		Integer scelta=null;
 		try {
@@ -35,6 +38,29 @@ public class Utility {
 		}
 		return scelta;
 	}
+	
+	 public static int leggiIntero (String messaggio)
+	  {	 
+	   Scanner lettore = new Scanner(System.in);
+	   lettore.useDelimiter(System.getProperty("line.separator"));
+	   boolean finito = false;
+	   int valoreLetto = 0;
+	   do
+	    {
+	     System.out.println(messaggio + " -->");
+	     if (lettore.hasNextInt())
+	      {
+	       valoreLetto = lettore.nextInt();
+	       finito = true;
+	      }
+	     else
+	      {
+	       System.out.println(ERRORE_FORMATO);
+	       String daButtare = lettore.next();
+	      }
+	    } while (!finito);
+	   return valoreLetto;
+	  }
 	
 	public static String leggiStringa() 
 	{
@@ -79,6 +105,11 @@ public class Utility {
 		}while(!fine);
 		return a;
 	}
-	
+
+	public static void stampaVettoreNumerato(Vector<String> daStampare) {
+		for (int i = 0; i < daStampare.size(); i++) {
+			System.out.println(i+1 + ") " + daStampare.get(i));
+		}
+	}
 
 }

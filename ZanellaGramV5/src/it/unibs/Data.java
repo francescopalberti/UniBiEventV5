@@ -32,6 +32,7 @@ public Data(Integer gg, Integer mm, Integer yy) {
 		return anno;
 	}
 
+	//Con date uguali ritorna FALSE
 	public Boolean isPrecedente(Data unaData) {
 		if (anno<unaData.getAnno()) return true;
 		else if (anno>unaData.getAnno()) return false;
@@ -51,30 +52,28 @@ public Data(Integer gg, Integer mm, Integer yy) {
 	public boolean controlloData() {
 		if(anno==null && mese==null && giorno==null) return true;
 		if(anno==null || mese==null || giorno==null) return false;
-		if(anno<2019) return false;
-		else {
-			switch (mese) {
-				case 2:
-					if(giorno>29) return false;
-					break;
-				case 4:
-				case 6:
-				case 10:
-				case 11:
-					if(giorno>30) return false;
-					break;
-				case 1:
-				case 3:
-				case 5:
-				case 7:
-				case 8:
-				case 9:
-				case 12:
-					if (giorno>31) return false;
-					break;
-				default:
-					return false;
-			}
+		switch (mese) {
+			case 2:
+				if(giorno>29) return false;
+				break;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				if(giorno>30) return false;
+				break;
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				if (giorno>31) return false;
+				break;
+			default:
+				return false;
+			
 		}
 		return true;
 	}
