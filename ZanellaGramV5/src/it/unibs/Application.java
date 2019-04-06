@@ -163,7 +163,7 @@ public class Application implements Serializable{
 		   if(scelta>daStampare.size()) System.out.println("Scelta non valida!!");
 		   else if (scelta==0) return;
 		   else {
-				   String preferita = categorie[scelta-1];
+				   String preferita = daStampare.get(scelta-1);
 				   mioProfilo.addCategoriaPreferita(preferita);
 				   daStampare.remove(scelta-1);
 		   		}
@@ -493,7 +493,9 @@ public class Application implements Serializable{
 		int a;
 		do {
 			if(mioProfilo.hasEventiPrenotati()) { 
+				mioProfilo.aggiornaEventiPrenotati();
 				mioProfilo.stampaEventiPrenotati();
+				
 				a = Utility.sceltaDaLista("Seleziona evento a cui vuoi disiscriverti (0 per uscire):", mioProfilo.getEventiPrenotati().size());
 				if(a==0) return;
 				else {
