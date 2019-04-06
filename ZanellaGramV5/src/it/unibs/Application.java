@@ -123,7 +123,7 @@ public class Application implements Serializable{
 		boolean fine=false;
 		do {
 			String nick=Utility.leggiStringa("Nomignolo*");
-			if(nick=="") System.out.println("Il nomignolo è obbligatorio!");
+			if(nick==null) System.out.println("Il nomignolo è obbligatorio!");
 			else {
 				if(controlloNomignolo(nick)) {
 					mioProfilo=new SpazioPersonale(nick);
@@ -305,6 +305,7 @@ public class Application implements Serializable{
 					   if(gg==null && mm==null && aa==null) {
 						   date=null;
 						   formatoDataErrato=false;
+						   incoerenzaData=false;
 					   }
 					   else {
 						   date = new Data(gg, mm, aa);
@@ -312,6 +313,15 @@ public class Application implements Serializable{
 						   incoerenzaData=date.isPrecedente(dataOdierna);
 						   if (formatoDataErrato) System.out.println("Hai inserito una data nel formato errato!");
 						   else if(incoerenzaData) System.out.println("Hai inserito una data già passata!");   
+						   else if(i==TERMINE_RITIRO_ISCRIZIONE){
+							   Data termineIscrizioni=(Data)campi[TERMINE_ISCRIZIONI].getValore();
+							   if(termineIscrizioni==null) campi[i].setValore(date);
+							   else if(termineIscrizioni.isPrecedente(date)){
+								   System.out.println("Il termine ritiro iscrizione deve essere PRECEDENTE al termine iscrizioni!");
+								   incoerenzaData=true;
+							   } else campi[i].setValore(date);
+								   
+						   }
 						   else campi[i].setValore(date);
 					   }
 				   } while(formatoDataErrato || incoerenzaData);

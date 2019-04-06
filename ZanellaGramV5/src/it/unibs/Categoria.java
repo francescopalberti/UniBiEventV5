@@ -165,8 +165,6 @@ public class Categoria implements Serializable {
 		return s.toString();
 	}
 	
-	// tolta la parte di infoPagamento, la mettiamo separatamente in PartitaDiCalcio (non aggiunge niente, no override di infoPagamento(),
-	// usa il metodo di Categoria), e in Concerto (aggiunge le varie quote, override di infoPagamento(), usa il metodo di Concerto)
 
 	public String infoChiusura(SpazioPersonale profilo) {
 		StringBuffer s = new StringBuffer();

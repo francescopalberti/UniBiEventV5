@@ -5,8 +5,67 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Utility {
-	private final static String ERRORE_FORMATO = "Attenzione: il dato inserito non e' nel formato corretto";
+	private static Scanner lettore = creaScanner();
 	
+	private final static String ERRORE_FORMATO = "Attenzione: il dato inserito non e' nel formato corretto.";
+	
+	private static Scanner creaScanner ()
+	  {
+	   Scanner creato = new Scanner(System.in);
+	   creato.useDelimiter(System.getProperty("line.separator"));
+	   return creato;
+	  }
+	
+
+	  public static int leggiIntero (String messaggio)
+	  {
+	   boolean finito = false;
+	   int valoreLetto = 0;
+	   do
+	    {
+	     System.out.println(messaggio+"--->");
+	     try
+	      {
+	       valoreLetto = lettore.nextInt();
+	       finito = true;
+	      }
+	     catch (InputMismatchException e)
+	      {
+	       System.out.println(ERRORE_FORMATO);
+	       String daButtare = lettore.next(); 
+	      }
+	    } while (!finito);
+	   return valoreLetto;
+	  }
+	  
+	  public static Integer leggiInteroOpzionale (String messaggio)
+	  {
+	   boolean finito = false;
+	   Integer valoreLetto = null;
+	   do
+	    {
+	     System.out.println(messaggio+"--->");
+	     try
+	      {
+	    	 if (lettore.hasNextInt())
+		      {
+		       valoreLetto = lettore.nextInt();
+		       finito = true;
+		      } else if(lettore.next().equals("")){
+		    	  valoreLetto=null;
+		    	  finito=true;
+		      }
+	      }
+	     catch (InputMismatchException e)
+	      {
+	       System.out.println(ERRORE_FORMATO);
+	       String daButtare = lettore.next();
+	      }
+	     if(!finito) System.out.println("Inserimento errato, riprovare.");
+	    } while (!finito);
+	   return valoreLetto;
+	  }
+	  
 	public static int scegli(String titoloMain, String[] vociMain, String query, int dim)
 	{
 		System.out.println("________________________________________________");
@@ -19,49 +78,7 @@ public class Utility {
 		return a;
 	}
 	
-
-	public static Integer leggiInteroOpzionale(String query) 
-	{
-		Integer scelta=null;
-		try {
-			System.out.println(query + " -->");
-			Scanner in= new Scanner(System.in);
-			String line=in.nextLine();
-			if (!line.equals("")) {
-				scelta = Integer.parseInt(line);
-			} else {
-				scelta=null; 
-			}
-			}catch(InputMismatchException e)
-		{
-			System.out.println("Errore di inserimento!");
-		}
-		return scelta;
-	}
-	
-	 public static int leggiIntero (String messaggio)
-	  {	 
-	   Scanner lettore = new Scanner(System.in);
-	   lettore.useDelimiter(System.getProperty("line.separator"));
-	   boolean finito = false;
-	   int valoreLetto = 0;
-	   do
-	    {
-	     System.out.println(messaggio + " -->");
-	     if (lettore.hasNextInt())
-	      {
-	       valoreLetto = lettore.nextInt();
-	       finito = true;
-	      }
-	     else
-	      {
-	       System.out.println(ERRORE_FORMATO);
-	       String daButtare = lettore.next();
-	      }
-	    } while (!finito);
-	   return valoreLetto;
-	  }
-	
+		  
 	public static String leggiStringa() 
 	{
 		String lettura = null;
