@@ -532,7 +532,7 @@ public class Application implements Serializable{
 	
 	private void gestioneInviti() {
 		int a;
-		do {
+		//do {
 			if(mioProfilo.hasEventiCreati()) { 
 				mioProfilo.stampaEventiCreati();
 				a = Utility.sceltaDaLista("Seleziona l'evento per cui vuoi invitare (0 per uscire)", mioProfilo.getEventiCreati().size());
@@ -551,23 +551,25 @@ public class Application implements Serializable{
 									break;
 								case 1:
 									for (SpazioPersonale profilo : listaExPartecipanti) {
-										profilo.addNotifica("Sei invitato a: " + eventoSelezionato);
+										profilo.addNotifica("Sei invitato da "+ mioProfilo.getNomignolo() +" all'evento: " + eventoSelezionato.getCampiBase()[TITOLO].getValore() + ",della categoria "+ eventoSelezionato.getNome());
 									}
+									System.out.println("Inviti inviati con successo.");
 									fine=true;
 									break;
 								case 2:
-								int s;
-								mioProfilo.stampaExPartecipanti(categoria);
-								do {
-										s = Utility.sceltaDaLista("Seleziona il profilo che vuoi invitare (0 per uscire):", listaExPartecipanti.size());
-										if(s==0) return;
-										else{
-											listaExPartecipanti.get(s-1).addNotifica("Sei invitato a: " + eventoSelezionato); 
-										}
-									}while(s!=0);
-									fine=true;
-									break;
-								default: System.out.println("Scelta non valida!");
+									int s;
+									mioProfilo.stampaExPartecipanti(categoria);
+									do {
+											s = Utility.sceltaDaLista("Seleziona il profilo che vuoi invitare (0 per uscire):", listaExPartecipanti.size());
+											if(s==0) return;
+											else{
+												listaExPartecipanti.get(s-1).addNotifica("Sei invitato da "+ mioProfilo.getNomignolo() +" all'evento: " + eventoSelezionato.getCampiBase()[TITOLO].getValore() + ",della categoria "+ eventoSelezionato.getNome());
+												System.out.println("Invito inviato con successo.");
+											}
+										}while(s!=0);
+										fine=true;
+										break;
+									default: System.out.println("Scelta non valida!");
 									break;
 								}
 						}while(!fine);
@@ -577,7 +579,7 @@ public class Application implements Serializable{
 				System.out.println("Non hai creato nessun evento!");
 				a=0;
 			}
-		}while(a!=0);
+		//}while(a!=0);
 	}
 
 	
