@@ -66,6 +66,14 @@ public class Categoria implements Serializable {
 	public String getDescrizione() {
 		return descrizione;
 	}
+	
+	public String getStato() {
+		if(chiuso) return "Chiuso";
+		if(ritirato) return "Ritirato";
+		if(concluso) return "Concluso";
+		if(fallito) return "Fallito";
+		return "Aperto";
+	}
 
 	
 	public Campo[] getCampiBase() {
@@ -114,9 +122,6 @@ public class Categoria implements Serializable {
 			fallito=true;
 			for (SpazioPersonale profilo : listaPartecipanti) {
 				profilo.addNotifica(infoFallimento());
-				
-				//  SE FACCIO STAMPA QUA ME LE STAMPA TUTTE, DA APPLICATION NO PORCODDDDDDIO
-				profilo.stampaNotifiche();
 			}
 		}
 	}

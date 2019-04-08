@@ -310,16 +310,20 @@ public class Application implements Serializable{
 					   else {
 						   date = new Data(gg, mm, aa);
 						   formatoDataErrato=!date.controlloData();
-						   incoerenzaData=date.isPrecedente(dataOdierna);
-						   if (formatoDataErrato) System.out.println("Hai inserito una data nel formato errato!");
-						   else if(incoerenzaData) System.out.println("Hai inserito una data già passata!");   
-						   else if(i==TERMINE_RITIRO_ISCRIZIONE){
+						   if (formatoDataErrato) System.out.println("Hai inserito una data nel formato errato!"); 
+						   else if(date.isPrecedente(dataOdierna)) {
+								   incoerenzaData=true; 
+								   System.out.println("Hai inserito una data già passata!"); 
+						   }else if(i==TERMINE_RITIRO_ISCRIZIONE){
 							   Data termineIscrizioni=(Data)campi[TERMINE_ISCRIZIONI].getValore();
 							   if(termineIscrizioni==null) campi[i].setValore(date);
 							   else if(termineIscrizioni.isPrecedente(date)){
 								   System.out.println("Il termine ritiro iscrizione deve essere PRECEDENTE al termine iscrizioni!");
 								   incoerenzaData=true;
-							   } else campi[i].setValore(date);
+							   } else {
+								   campi[i].setValore(date);
+								   incoerenzaData=false;
+							   }
 								   
 						   }
 						   else campi[i].setValore(date);
@@ -493,7 +497,6 @@ public class Application implements Serializable{
 		int a;
 		do {
 			if(mioProfilo.hasEventiPrenotati()) { 
-				mioProfilo.aggiornaEventiPrenotati();
 				mioProfilo.stampaEventiPrenotati();
 				
 				a = Utility.sceltaDaLista("Seleziona evento a cui vuoi disiscriverti (0 per uscire):", mioProfilo.getEventiPrenotati().size());

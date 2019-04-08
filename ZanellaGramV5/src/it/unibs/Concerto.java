@@ -47,6 +47,7 @@ public class Concerto extends Categoria implements Serializable{
 			s.append("   " + campiSpecifici[j].toStringValore());
 			s.append(lineSeparator);
 		}
+		s.append("Stato: " + getStato());
 		return s.toString();
 	}
 	

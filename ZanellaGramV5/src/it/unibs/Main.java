@@ -9,7 +9,7 @@ import java.util.TimeZone;
 
 public class Main {
 
-	private static final String pathname = "data\\application.dat";
+	private static final String pathname = "..\\data\\application.dat";
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"),Locale.ITALY);

@@ -190,10 +190,10 @@ public class SpazioPersonale implements Serializable {
 		}
 		
 	}
-
+	/*metodo per cancellare gli eventi prenotati. Non utilizzato
 	public void aggiornaEventiPrenotati() {
 		for (Categoria evento : eventiPrenotati) {
 			if(!evento.isAperto()) eventiPrenotati.remove(evento);
 		}
-	}
+	}*/
 }
