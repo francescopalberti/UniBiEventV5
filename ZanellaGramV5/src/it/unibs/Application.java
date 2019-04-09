@@ -69,6 +69,7 @@ public class Application implements Serializable{
 		boolean fine=false;
 		while(!fine)
 		{	
+			System.out.println("\nUniBiEvent V5.0");
 			int i = Utility.scegli(titoloMain,vociMain,"Seleziona una voce",4);
 			switch(i) {
 				case 0: 
